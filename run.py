@@ -1,23 +1,4 @@
-"""
-Unified Broker — top-level runner
-──────────────────────────────────
-Convenience script to exercise all tasks from the command line.
 
-Usage:
-    python run.py --task 1          # Kite auth & session
-    python run.py --task 2          # Kite portfolio
-    python run.py --task 3          # Kite tick stream (Ctrl-C to stop)
-    python run.py --task 3 --duration 60
-    python run.py --task 4          # IBKR auth
-    python run.py --task 5          # IBKR portfolio
-    python run.py --task 6          # IBKR market data (60 s)
-    python run.py --task 7          # Unified portfolio view
-    python run.py --task 8          # Launch Streamlit dashboard
-    python run.py --task 9          # AI assistant (interactive)
-    python run.py --task 9 --brief  # AI daily brief
-    python run.py --task 9 --anomaly
-    python run.py --task 9 --ask "What is my largest position?"
-"""
 import argparse
 import subprocess
 import sys

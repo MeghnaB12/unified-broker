@@ -58,7 +58,7 @@ IBKR Market Data ──► ibkr/market_data ───┘                        
 ### 1. Clone and install
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/MeghnaB12/unified-broker.git
 cd unified-broker
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
@@ -72,6 +72,7 @@ Create a `.env` file in the project root:
 KITE_API_KEY=your_kite_api_key
 KITE_API_SECRET=your_kite_api_secret
 KITE_ACCESS_TOKEN=                  # auto-filled after first login
+                                    # Session token is persisted to .env for convenience during the dev phase
 
 IBKR_HOST=127.0.0.1
 IBKR_PORT=7497                      # 7497=TWS paper | 7496=TWS live | 4001=Gateway
@@ -84,6 +85,18 @@ ANTHROPIC_API_KEY=your_anthropic_key
 ITC_ALERT_ABOVE=480.0
 ONGC_ALERT_BELOW=180.0
 ```
+
+---
+
+## IBKR setup note
+
+Before running Tasks 4–6:
+
+1. Open TWS or IB Gateway
+2. **Edit → Global Configuration → API → Settings**
+3. Enable **"Enable ActiveX and Socket Clients"**
+4. Socket port: `7497` (paper) or `7496` (live)
+5. Add `127.0.0.1` to trusted IPs
 
 ---
 
@@ -123,28 +136,6 @@ python run.py --task 9              # interactive multi-turn REPL
 ```
 
 ---
-
-## Task reference
-
-| # | Task | Key file | Output |
-|---|------|----------|--------|
-| 1 | Kite Auth | `kite/auth.py` | Active session; token stored in `.env` |
-| 2 | Kite Portfolio | `kite/portfolio.py` | DataFrames: holdings, positions, orders |
-| 3 | Kite Ticks | `kite/ticks.py` | SQLite tick log; console alerts on threshold cross |
-| 4 | IBKR Auth | `ibkr/auth.py` | Connected IB object; reconnect logged |
-| 5 | IBKR Portfolio | `ibkr/portfolio.py` | Positions, NAV, cash; multi-currency USD + INR |
-| 6 | IBKR Market Data | `ibkr/market_data.py` | CSV of mid-prices every 5 s for ≥ 60 s |
-| 7 | Unified View | `unified/portfolio.py` | Single DataFrame, broker column, ₹ and $ totals |
-| 8 | Dashboard | `dashboard/app.py` | Streamlit: holdings table, tick chart, broker toggle |
-| 9 | AI Layer | `ai/assistant.py` | See full breakdown below |
-
----
-
-## AI Layer — Task 9
-
-`ai/assistant.py` is the differentiator. It goes beyond a simple "ask Claude a question"
-wrapper by using **Claude's native tool-use (function calling)** so the model can
-actively query live data rather than relying on a static context blob.
 
 ### How tool-use works here
 
@@ -231,36 +222,6 @@ Claude › The main contributors to your Technology exposure are TCS (18%), INFY
 You › And how does that compare to my IBKR positions?
 Claude › Your IBKR book adds AAPL, MSFT, GOOGL — all Technology...
 ```
-
-### CLI usage
-
-```bash
-python run.py --task 9 --brief    # 6-8 bullet daily brief (value, P&L, regime, risk)
-python run.py --task 9 --risk     # detailed risk report with component breakdown
-python run.py --task 9 --anomaly  # tick anomaly scan + Claude explains each spike
-python run.py --task 9 --ask "What percentage of my portfolio is in Indian banking?"
-python run.py --task 9            # multi-turn REPL with conversation memory
-```
-
----
-
-## IBKR setup note
-
-Before running Tasks 4–6:
-
-1. Open TWS or IB Gateway
-2. **Edit → Global Configuration → API → Settings**
-3. Enable **"Enable ActiveX and Socket Clients"**
-4. Socket port: `7497` (paper) or `7496` (live)
-5. Add `127.0.0.1` to trusted IPs
-
----
-
-## Security
-
-- `.env`, `data/`, and `logs/` are in `.gitignore` — never committed
-- All access is read-only; no order placement anywhere in the codebase
-- Credentials shared under NDA — do not forward or commit
 
 ---
 

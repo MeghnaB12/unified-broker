@@ -58,7 +58,7 @@ IBKR Market Data ──► ibkr/market_data ───┘                        
 ### 1. Clone and install
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/MeghnaB12/unified-broker.git
 cd unified-broker
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
